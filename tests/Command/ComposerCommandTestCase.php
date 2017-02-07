@@ -18,7 +18,7 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- * @coversDefaultClass Prooph\Micro\Command\AbstractComposerCommand
+ * @coversDefaultClass Prooph\MicroCli\Command\AbstractComposerCommand
  */
 abstract class ComposerCommandTestCase extends TestCase
 {

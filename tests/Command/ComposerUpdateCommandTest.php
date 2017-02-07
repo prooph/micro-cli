@@ -15,7 +15,7 @@ namespace ProophTest\MicroCli\Command;
 use Prooph\MicroCli\Command\ComposerUpdateCommand;
 
 /**
- * @coversDefaultClass Prooph\Micro\Command\ComposerUpdateCommand
+ * @coversDefaultClass Prooph\MicroCli\Command\ComposerUpdateCommand
  */
 final class ComposerUpdateCommandTest extends ComposerCommandTestCase
 {
