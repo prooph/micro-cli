@@ -13,14 +13,17 @@ declare(strict_types=1);
 namespace ProophTest\MicroCli\Command;
 
 use PHPUnit\Framework\TestCase;
-use Prooph\MicroCli\Command\AbstractComposerCommand;
+use Prooph\MicroCli\Command\ComposerRequireCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
-abstract class ComposerCommandTestCase extends TestCase
+/**
+ * @coversDefaultClass \Prooph\MicroCli\Command\ComposerRequireCommand
+ */
+final class ComposerRequireCommandTest extends TestCase
 {
     /**
-     * @var AbstractComposerCommand
+     * @var ComposerRequireCommand
      */
     protected $command;
 
@@ -28,8 +31,8 @@ abstract class ComposerCommandTestCase extends TestCase
     {
         $this->prepareTempDirectories();
 
-        /** @var AbstractComposerCommand $command */
-        $command = $this->getMockBuilder($this->getComposerCommandClass())
+        /** @var ComposerRequireCommand $command */
+        $command = $this->getMockBuilder(ComposerRequireCommand::class)
             ->setMethods(['getRootDir', 'getServiceDirPath'])
             ->getMock();
 
@@ -56,10 +59,12 @@ abstract class ComposerCommandTestCase extends TestCase
 
     /**
      * @test
+     * @covers ::__construct
+     * @covers ::configure
      */
     public function it_creates_command_instance(): void
     {
-        $this->assertInstanceOf($this->getComposerCommandClass(), $this->command);
+        $this->assertInstanceOf(ComposerRequireCommand::class, $this->command);
     }
 
     /**
@@ -72,7 +77,7 @@ abstract class ComposerCommandTestCase extends TestCase
         file_put_contents($this->getTempDirectory() . '/docker-compose.yml', 'services: []');
 
         $commandTester = new CommandTester($this->command);
-        $commandTester->execute([]);
+        $commandTester->execute(['package' => 'test/test']);
 
         $this->assertSame(1, $commandTester->getStatusCode());
         $this->assertContains('No php services declared in docker-compose.yml', $commandTester->getDisplay());
@@ -81,7 +86,6 @@ abstract class ComposerCommandTestCase extends TestCase
     /**
      * @test
      * @covers ::execute
-     * @covers ::getComposerCommand
      * @covers ::getDeclaredPhpServices
      * @covers ::getDockerComposeExecutable
      */
@@ -103,17 +107,21 @@ services:
     another_service:
         build: .
 EOL
-);
+        );
 
         $commandTester = new CommandTester($this->command);
         $commandTester->setInputs([0]); // we choose the first service here
-        $commandTester->execute(['--docker-executable' => 'echo']);
+        $commandTester->execute([
+            'package' => 'test/test',
+            '--docker-executable' => 'echo', ]
+        );
 
         $display = $commandTester->getDisplay();
 
         $this->assertSame(0, $commandTester->getStatusCode());
         $this->assertContains('php_service1', $display);
         $this->assertContains('php_service2', $display);
+        $this->assertContains('require test/test', $display);
         $this->assertNotContains('php_service_without_composer_file', $display);
         $this->assertNotContains('other_service', $display);
         $this->assertNotContains('another_service', $display);
@@ -140,6 +148,7 @@ EOL
 
         $commandTester = new CommandTester($this->command);
         $commandTester->execute([
+            'package' => 'test/test',
             'service' => 'php_service1',
             '--docker-executable' => 'echo',
         ]);
@@ -171,6 +180,7 @@ EOL
         $commandTester = new CommandTester($this->command);
         $commandTester->setInputs([0]);
         $commandTester->execute([
+            'package' => 'test/test',
             'service' => 'not_a_service',
             '--docker-executable' => 'echo',
         ]);
@@ -204,6 +214,7 @@ EOL
 
         $commandTester = new CommandTester($this->command);
         $commandTester->execute([
+            'package' => 'test/test',
             '--all' => true,
             '--docker-executable' => 'echo',
         ]);
@@ -215,8 +226,6 @@ EOL
         $this->assertContains('php_service2', $display);
         $this->assertNotContains('Select a service', $display);
     }
-
-    abstract protected function getComposerCommandClass(): string;
 
     private function getTempDirectory(): string
     {
