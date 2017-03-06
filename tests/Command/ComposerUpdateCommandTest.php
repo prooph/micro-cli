@@ -17,7 +17,7 @@ use Prooph\MicroCli\Command\ComposerUpdateCommand;
 /**
  * @coversDefaultClass Prooph\MicroCli\Command\ComposerUpdateCommand
  */
-final class ComposerUpdateCommandTest extends ComposerCommandTestCase
+class ComposerUpdateCommandTest extends ComposerCommandTestCase
 {
     protected function getComposerCommandClass(): string
     {

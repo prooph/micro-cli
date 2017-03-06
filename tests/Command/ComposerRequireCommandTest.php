@@ -20,7 +20,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 /**
  * @coversDefaultClass \Prooph\MicroCli\Command\ComposerRequireCommand
  */
-final class ComposerRequireCommandTest extends TestCase
+class ComposerRequireCommandTest extends TestCase
 {
     /**
      * @var ComposerRequireCommand
