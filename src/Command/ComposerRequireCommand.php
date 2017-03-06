@@ -22,16 +22,17 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\ProcessBuilder;
 
-abstract class AbstractComposerCommand extends AbstractCommand
+class ComposerRequireCommand extends AbstractCommand
 {
     private const DEFAULT_TIMEOUT = 0;
     private const DEFAULT_IDLE_TIMEOUT = 30;
 
-    abstract protected function getComposerCommand(): string;
-
     protected function configure()
     {
         $this
+            ->setName('micro:composer:require')
+            ->setDescription('Adds package as composer dependencies for services')
+            ->addArgument('package', InputArgument::REQUIRED)
             ->addArgument('service', InputArgument::OPTIONAL)
             ->addOption('all', '-a', InputOption::VALUE_NONE)
             ->addOption(
@@ -81,11 +82,11 @@ abstract class AbstractComposerCommand extends AbstractCommand
         /** @var ProcessHelper $processHelper */
         $processHelper = $this->getHelper('process');
 
-        $command = $this->getComposerCommand();
+        $package = $input->getArgument('package');
 
         foreach ($requestedServices as $service => $values) {
             $io->newLine(2);
-            $io->section("Run `docker-compose $command` for service $service");
+            $io->section("Run `docker-compose require` for service $service");
 
             $processBuilder->setArguments([
                 'run',
@@ -95,7 +96,8 @@ abstract class AbstractComposerCommand extends AbstractCommand
                 '--volume',
                 $this->getServiceDirPath($service) . ':/app:rw',
                 'prooph/composer:'. $values['php_version'],
-                $command,
+                'require',
+                $package,
                 '--no-interaction',
                 '--no-suggest',
             ]);

@@ -17,7 +17,7 @@ use Prooph\MicroCli\Command\ComposerInstallCommand;
 /**
  * @coversDefaultClass Prooph\MicroCli\Command\ComposerInstallCommand
  */
-final class ComposerInstallCommandTest extends ComposerCommandTestCase
+class ComposerInstallCommandTest extends ComposerCommandTestCase
 {
     protected function getComposerCommandClass(): string
     {
