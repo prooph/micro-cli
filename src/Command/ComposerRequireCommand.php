@@ -139,28 +139,28 @@ class ComposerRequireCommand extends AbstractCommand
         return $phpServices;
     }
 
-    private function getRequestedServices(InputInterface $input, OutputStyle $io, array $requestedServices): array
+    private function getRequestedServices(InputInterface $input, OutputStyle $io, array $declaredPhpServices): array
     {
         if ($input->getOption('all')) {
-            return $requestedServices;
+            return $declaredPhpServices;
         }
 
         $requestedService = $input->getArgument('service');
 
-        if ($requestedService && ! array_key_exists($requestedService, $requestedServices)) {
+        if ($requestedService && ! array_key_exists($requestedService, $declaredPhpServices)) {
             $io->warning("Service with name '$requestedService' is not configured in docker-compose.yml yet.");
             $requestedService = null;
         }
 
         if (! $requestedService) {
-            $requestedService = $io->choice('Select a service', array_keys($requestedServices));
+            $requestedService = $io->choice('Select a service', array_keys($declaredPhpServices));
         }
 
-        if (! array_key_exists($requestedService, $requestedServices)) {
+        if (! array_key_exists($requestedService, $declaredPhpServices)) {
             throw new \RuntimeException('Invalid service name provided.');
         }
 
-        return [$requestedService => $requestedServices[$requestedService]];
+        return [$requestedService => $declaredPhpServices[$requestedService]];
     }
 
     private function getDockerComposeExecutable(InputInterface $input): string
