@@ -16,7 +16,7 @@ TBD
 
 ## Support
 
-- Ask questions on [prooph-users](https://groups.google.com/forum/?hl=de#!forum/prooph) mailing list.
+- Ask questions on Stack Overflow tagged with [#prooph](https://stackoverflow.com/questions/tagged/prooph).
 - File issues at [https://github.com/prooph/micro-cli/issues](https://github.com/prooph/micro-cli/issues).
 - Say hello in the [prooph gitter](https://gitter.im/prooph/improoph) chat.
 
