@@ -82,7 +82,7 @@ class ComposerRequireCommand extends AbstractCommand
 
         foreach ($requestedServices as $service => $values) {
             $io->newLine(2);
-            $io->section("Run `docker-compose require` for service $service");
+            $io->section("Run `composer require` for service $service");
 
             $process = new Process([
                 $dockerExecutable,

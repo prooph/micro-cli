@@ -81,7 +81,7 @@ abstract class AbstractComposerCommand extends AbstractCommand
 
         foreach ($requestedServices as $service => $values) {
             $io->newLine(2);
-            $io->section("Run `docker-compose $command` for service $service");
+            $io->section("Run `composer $command` for service $service");
 
             $process = new Process([
                 $dockerExecutable,
