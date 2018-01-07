@@ -33,4 +33,3 @@ $application->add(new Command\ComposerInstallCommand());
 $application->add(new Command\ComposerUpdateCommand());
 $application->add(new Command\ComposerRequireCommand());
 $application->run();
-
