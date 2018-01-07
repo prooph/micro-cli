@@ -20,7 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Process\ExecutableFinder;
-use Symfony\Component\Process\ProcessBuilder;
+use Symfony\Component\Process\Process;
 
 abstract class AbstractComposerCommand extends AbstractCommand
 {
@@ -74,10 +74,6 @@ abstract class AbstractComposerCommand extends AbstractCommand
         $idleTimeout = (int) $input->getOption('idle-timeout');
         $dockerExecutable = $this->getDockerComposeExecutable($input);
 
-        $processBuilder = new ProcessBuilder();
-        $processBuilder->setPrefix($dockerExecutable);
-        $processBuilder->setTimeout($timeout);
-
         /** @var ProcessHelper $processHelper */
         $processHelper = $this->getHelper('process');
 
@@ -87,7 +83,8 @@ abstract class AbstractComposerCommand extends AbstractCommand
             $io->newLine(2);
             $io->section("Run `docker-compose $command` for service $service");
 
-            $processBuilder->setArguments([
+            $process = new Process([
+                $dockerExecutable,
                 'run',
                 '--rm',
                 '--env',
@@ -99,8 +96,7 @@ abstract class AbstractComposerCommand extends AbstractCommand
                 '--no-interaction',
                 '--no-suggest',
             ]);
-
-            $process = $processBuilder->getProcess();
+            $process->setTimeout($timeout);
             $process->setIdleTimeout($idleTimeout);
 
             $processHelper->mustRun($output, $process, null, function ($type, $buffer) use ($io) {
