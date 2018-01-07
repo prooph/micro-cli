@@ -14,12 +14,12 @@ namespace Prooph\MicroCli;
 
 use Symfony\Component\Console\Application;
 
-chdir(dirname(__DIR__));
-
 if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
     include_once __DIR__ . '/../vendor/autoload.php';
+    chdir(__DIR__ . '/../');
 } elseif (file_exists(__DIR__ . '/../../../autoload.php')) {
     include_once __DIR__ . '/../../../autoload.php';
+    chdir(__DIR__ . '/../../../../');
 } else {
     throw new \RuntimeException('Error: vendor/autoload.php could not be found. Did you run php composer.phar install?');
 }
@@ -33,3 +33,4 @@ $application->add(new Command\ComposerInstallCommand());
 $application->add(new Command\ComposerUpdateCommand());
 $application->add(new Command\ComposerRequireCommand());
 $application->run();
+
